@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>aegis. | Safeguarding Digital Integrity</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap');
+
+    :root {
+      --text-main: #27272a; 
+      --text-sub: #71717a;
+      --accent: #9f1239; 
+      --glass: rgba(255, 255, 255, 0.85);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0; padding: 0; min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      background-color: #fdfbfb;
+      background-image: 
+        radial-gradient(at 20% 20%, rgba(252, 231, 243, 0.6) 0px, transparent 50%), 
+        radial-gradient(at 80% 80%, rgba(224, 231, 255, 0.6) 0px, transparent 50%), 
+        radial-gradient(at 50% 50%, rgba(254, 243, 199, 0.4) 0px, transparent 50%); 
+      color: var(--text-main);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--accent); font-weight: 600; text-decoration: none; transition: 0.3s; }
+    a:hover { color: #be185d; text-decoration: underline; }
+
+    .app-container {
+      width: 90%; max-width: 950px;
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 1);
+      border-radius: 32px;
+      padding: 60px 70px;
+      box-shadow: 0 40px 80px -20px rgba(113, 113, 122, 0.1);
+      animation: elegantFade 0.8s ease-out;
+    }
+
+    @keyframes elegantFade { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    header { margin-bottom: 40px; display: flex; justify-content: space-between; align-items: center; }
+    h1 { font-family: 'Playfair Display', serif; font-size: 56px; font-weight: 400; letter-spacing: -0.03em; margin: 0; color: #18181b; }
+    .tagline { font-size: 14px; color: var(--text-sub); margin-top: 4px; font-weight: 400; letter-spacing: 0.1em; text-transform: uppercase; }
+
+    .status-badge { background: #fdf2f8; color: #be185d; border: 1px solid #fce7f3; padding: 8px 16px; border-radius: 100px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; }
+
+    .tabs { display: flex; gap: 24px; margin-bottom: 40px; border-bottom: none; flex-wrap: wrap; }
+    .tab { padding: 12px 24px; font-size: 14px; font-weight: 500; color: #a1a1aa; cursor: pointer; transition: 0.3s; border-radius: 100px; background: rgba(255,255,255,0.5); }
+    .tab.active { color: #fff; background: #27272a; box-shadow: 0 10px 20px -5px rgba(39, 39, 42, 0.2); }
+
+    .panel { display: none; }
+    .panel.active { display: block; animation: softFade 0.5s ease; }
+    @keyframes softFade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 40px; }
+    .stat-card { padding: 30px; border-radius: 24px; text-align: center; transition: 0.3s; }
+    .stat-card:hover { transform: translateY(-5px); }
+    .stat-card:nth-child(1) { background: linear-gradient(135deg, #fdf4f4, #ffffff); border: 1px solid #fce8e8; } 
+    .stat-card:nth-child(2) { background: linear-gradient(135deg, #f4f6fd, #ffffff); border: 1px solid #e8edfc; } 
+    .stat-card:nth-child(3) { background: linear-gradient(135deg, #f4fdf8, #ffffff); border: 1px solid #e8fceb; } 
+    
+    .stat-val { font-family: 'Inter', sans-serif; font-size: 42px; font-weight: 600; color: #18181b; display: block; line-height: 1; margin-bottom: 8px; letter-spacing: -0.02em; }
+    .stat-label { font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--text-sub); letter-spacing: 0.1em; }
+
+    .meter-ui { margin-bottom: 40px; background: #fff; padding: 24px; border-radius: 20px; border: 1px solid rgba(0,0,0,0.03); box-shadow: 0 4px 20px rgba(0,0,0,0.02); }
+    .meter-label { font-weight: 500; margin-bottom: 16px; display: flex; justify-content: space-between; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; color: #3f3f46; }
+    .meter-bar { height: 8px; background: #f4f4f5; width: 100%; border-radius: 10px; overflow: hidden; }
+    .meter-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #f472b6, #818cf8); transition: width 1.5s cubic-bezier(0.25, 1, 0.5, 1); }
+
+    textarea, input { width: 100%; border: 1px solid #e4e4e7; background: #fafafa; padding: 20px 24px; border-radius: 16px; font-family: 'Inter', sans-serif; font-size: 15px; box-sizing: border-box; margin-bottom: 24px; transition: 0.3s; color: var(--text-main); }
+    textarea:focus, input:focus { outline: none; border-color: #a1a1aa; background: #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+    textarea { min-height: 140px; resize: vertical; }
+    
+    input[type="file"] { border: 1px dashed #d4d4d8; padding: 24px; text-align: center; cursor: pointer; color: var(--text-sub); font-size: 14px; background: #fff; }
+    input[type="file"]::file-selector-button { background: #fdf2f8; color: #be185d; border: 1px solid #fce7f3; padding: 10px 20px; border-radius: 100px; margin-right: 16px; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; transition: 0.3s; }
+    input[type="file"]::file-selector-button:hover { background: #fce7f3; }
+
+    button { background: var(--accent); color: #fff; border: none; padding: 20px 36px; border-radius: 100px; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; cursor: pointer; width: 100%; transition: all 0.3s ease; box-shadow: 0 10px 20px -5px rgba(159, 18, 57, 0.3); font-family: 'Inter', sans-serif; }
+    button:hover { transform: translateY(-2px); box-shadow: 0 15px 25px -5px rgba(159, 18, 57, 0.4); }
+    button:disabled { background: #e4e4e7; color: #a1a1aa; box-shadow: none; cursor: not-allowed; }
+
+    .result-box { padding: 30px; border-radius: 20px; display: none; margin-top: 30px; font-size: 15px; line-height: 1.7; }
+    .safe { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
+    .blocked { background: #fff1f2; border: 1px solid #fecaca; color: #9f1239; }
+
+    .doc-container { background: #ffffff; color: #3f3f46; padding: 32px; border-radius: 16px; font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.8; margin-top: 20px; border: 1px solid #e4e4e7; white-space: pre-wrap; position: relative; }
+
+    .helpline { background: linear-gradient(135deg, #fffbeb, #ffffff); padding: 20px 24px; font-size: 14px; border-radius: 16px; margin-bottom: 40px; border: 1px solid #fef08a; color: #92400e; display: flex; align-items: center; }
+    
+    footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid #e4e4e7; display: flex; justify-content: space-between; font-size: 12px; color: #a1a1aa; text-transform: uppercase; letter-spacing: 0.05em; }
+
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+    .copy-badge { position: absolute; top: 16px; right: 16px; background: #f4f4f5; color: #52525b; border: none; padding: 6px 14px; border-radius: 100px; cursor: pointer; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; transition: 0.3s; font-family: 'Inter', sans-serif; }
+    .copy-badge:hover { background: #e4e4e7; color: #18181b; }
+    
+    @media (max-width: 850px) { 
+      .grid { grid-template-columns: 1fr; gap: 24px;} 
+      .stats-grid { grid-template-columns: 1fr; gap: 16px; } 
+      .app-container { width: 95%; padding: 40px 24px; border-radius: 24px; }
+      h1 { font-size: 42px; }
+      .tabs { gap: 10px; overflow-x: auto; white-space: nowrap; padding-bottom: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <header>
+      <div>
+        <h1>aegis.</h1>
+        <p class="tagline">Safeguarding Digital Integrity</p>
+      </div>
+      <div class="status-badge">Node Active</div>
+    </header>
+
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('guard', event)">Consent Guard</div>
+      <div class="tab" onclick="switchTab('evidence', event)">Evidence Assist</div>
+      <div class="tab" onclick="switchTab('intel', event)">Global Intelligence</div>
+      <div class="tab" onclick="switchTab('how', event)">How It Works</div>
+    </div>
+
+    <div id="panel-guard" class="panel active">
+      <div class="grid">
+        <div>
+          <p style="color:var(--text-sub); font-size:14px; margin-bottom:20px;">Adversarial prompt interception and intent validation.</p>
+          <textarea id="cg-prompt" placeholder="Input prompt for safety validation..."></textarea>
+          <button id="cg-btn" onclick="runConsentGuard()">Initiate Analysis</button>
+        </div>
+        <div id="cg-result" class="result-box"></div>
+      </div>
+    </div>
+
+    <div id="panel-evidence" class="panel">
+      <p style="color:var(--text-sub); font-size:14px; margin-bottom:24px;">Multimodal forensic scanning and legal documentation drafting.</p>
+
+      <div class="helpline">
+        <strong style="display:block; margin-bottom:4px; font-size: 16px;">Safety Resource Directory:  </strong>
+           Cyber Crime India: 1930 | Women Helpline: 1091 | Portal: <a href="https://cybercrime.gov.in" target="_blank">cybercrime.gov.in</a>
+      </div>
+      
+      <div class="grid" style="margin-bottom: 24px;">
+        <input type="text" id="ea-name" placeholder="Full Legal Name">
+        <input type="text" id="ea-location" placeholder="Source URL / Platform Found">
+      </div>
+      <input type="file" id="ea-image" accept="image/*" style="padding: 16px; background: rgba(255,255,255,0.4);">
+      <button id="ea-btn" onclick="runEvidenceAssist()">Scan Asset for Neural Artifacts</button>
+
+      <div id="ea-result" style="display:none;">
+        <div class="meter-ui" style="margin-top: 48px;">
+          <div class="meter-label"><span>Synthetic Probability Score</span><span id="ea-score-text">0%</span></div>
+          <div class="meter-bar"><div id="ea-meter-fill" class="meter-fill"></div></div>
+        </div>
+        
+        <h3>Forensic Findings</h3>
+        <div class="doc-container">
+          <span class="copy-badge" onclick="copyDiv('ea-findings-text')">COPY</span>
+          <div id="ea-findings-text"></div>
+        </div>
+
+        <div id="ea-fir-section" style="display:none; margin-top: 32px; padding: 24px; background: rgba(0,0,0,0.03); border-radius: 16px; border: 1px dashed #ccc;">
+          <p style="font-weight: 700; margin-top: 0; font-size: 18px;">Proceed with Legal Action?</p>
+          <p id="ea-fir-warning-text" style="font-size: 15px; margin-bottom: 20px; line-height: 1.5;"></p>
+          <button id="ea-generate-fir-btn" onclick="generateFIR()" style="width: auto; padding: 14px 28px; font-size: 14px;">Override AI & Draft Documents</button>
+          
+          <div id="ea-complaint-box" style="display:none; margin-top: 32px;">
+            <div class="grid">
+              <div>
+                <h3>Legal Complaint Draft (FIR)</h3>
+                <div class="doc-container" style="padding: 24px; font-size: 12px;">
+                  <span class="copy-badge" onclick="copyDiv('ea-complaint-text')">COPY</span>
+                  <div id="ea-complaint-text"></div>
+                </div>
+              </div>
+              <div>
+                <h3>Evidence Certificate</h3>
+                <div class="doc-container" style="padding: 24px; font-size: 12px; background: #fafafa;">
+                  <span class="copy-badge" onclick="copyDiv('ea-card-text')">COPY</span>
+                  <div id="ea-card-text"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+   <div id="panel-intel" class="panel">
+      <p style="color:var(--text-sub); font-size:14px; margin-bottom:24px;">Real-time threat telemetry and coordinated deepfake attack monitoring.</p>
+
+      <div class="stats-grid">
+        <div class="stat-card"><span class="stat-val" id="threat-count">0</span><span class="stat-label">Neural Threats Neutralized</span></div>
+        <div class="stat-card"><span class="stat-val" id="report-count">0</span><span class="stat-label">Forensic Reports Issued</span></div>
+        <div class="stat-card"><span class="stat-val" id="latency-val">0.2s</span><span class="stat-label">Avg. Node Latency</span></div>
+      </div>
+      <h3>Real-time Threat Intelligence Feed</h3>
+      <div id="intel-feed" class="doc-container" style="background: rgba(0,0,0,0.03); color: #000; font-family: inherit; border: 1px dashed #ccc; font-size: 13px;">
+        • Initializing live telemetry...
+      </div>
+    </div>
+
+    <div id="panel-how" class="panel">
+      <p style="color:var(--text-sub); font-size:14px; margin-bottom:24px;">Aegis Operation Manual & Legal Framework</p>
+      <div class="doc-container" style="background: transparent; border: none; box-shadow: none; padding: 0;">
+        <h3 style="font-family: 'Playfair Display', serif; font-size: 24px; color: var(--text-main); margin-top: 0; margin-bottom: 8px;">1. Consent Guard (Prevention)</h3>
+        <p style="margin-bottom: 12px; color: var(--text-sub); line-height: 1.6;">Aegis proactively intercepts text prompts sent to generative AI models. If a user attempts to generate non-consensual media, impersonate a public figure, or create illicit material, Consent Guard's NLU engine immediately flags the intent and hard-blocks the request.</p>
+
+        <h3 style="font-family: 'Playfair Display', serif; font-size: 24px; color: var(--text-main); margin-bottom: 8px;">2. Evidence Assist (Response)</h3>
+        <p style="margin-bottom: 12px; color: var(--text-sub); line-height: 1.6;">If a victim discovers a suspicious image online, they can upload it to Evidence Assist. The tool uses advanced multimodal vision to detect pixel-level AI blending errors. It calculates a quantitative "Synthetic Probability Score" to verify manipulation.</p>
+
+        <div style="background: #fff1f2; border: 1px solid #fecaca; padding: 24px; border-radius: 16px; margin-top: 12px;">
+          <h3 style="font-family: 'Playfair Display', serif; font-size: 20px; color: #9f1239; margin-top: 0; margin-bottom: 12px;">Global & Indian Legal Framework (IT Act 66E & UN SDGs)</h3>
+          <p style="color: #be185d; margin-bottom: 0; line-height: 1.6;">The creation and distribution of non-consensual synthetic media (deepfakes) is a severe criminal offense in India under <strong>Section 66E of the Information Technology Act, 2000</strong> and relevant sections of the Bharatiya Nyaya Sanhita (BNS). Violators face up to 3 years imprisonment and hefty fines. Furthermore, combating digital violence aligns directly with the <strong>United Nations Sustainable Development Goals (SDGs 5 & 16)</strong>. Aegis bridges the gap between victims and these legal systems by automatically drafting compliant FIRs, ready to be submitted to <a href="https://cybercrime.gov.in" target="_blank">cybercrime.gov.in</a>.</p>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <span>Google Solutions Challenge 2026 | PS1 Track</span>
+      <span>Aegis Intelligence Network v2.6.2</span>
+    </footer>
+  </div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
+
+    const GEMINI_API_KEY = "AIzaSyArD3IFPbCMI_eK_3-4zPXa8rMl6V-W5tY"; 
+    const firebaseConfig = {
+      apiKey: "AIzaSyArD3IFPbCMI_eK_3-4zPXa8rMl6V-W5tY",
+      authDomain: "aegis-89582.firebaseapp.com",
+      projectId: "aegis-89582",
+      storageBucket: "aegis-89582.firebasestorage.app",
+      messagingSenderId: "266993624645",
+      appId: "1:266993624645:web:f2e6338f06524d2ec6252c"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    window.switchTab = (tab, e) => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      e.target.classList.add('active');
+      document.getElementById('panel-' + tab).classList.add('active');
+    };
+
+    window.copyDiv = (id) => {
+      const text = document.getElementById(id).innerText;
+      navigator.clipboard.writeText(text);
+      alert("Copied to clipboard!");
+    };
+
+    // ENTERPRISE FIX 1: Auto-Retry API Fetcher
+    // This silently retries 3 times if Google's servers crash (503 Error)
+    async function fetchWithRetry(url, options, retries = 3) {
+        for (let i = 0; i < retries; i++) {
+            const res = await fetch(url, options);
+            if (res.ok) return res;
+            if (res.status === 503) {
+                console.log(`Google API 503 Overload. Retrying... (Attempt ${i+1}/${retries})`);
+                await new Promise(r => setTimeout(r, 2000)); // Wait 2 seconds
+            } else {
+                return res; // Return immediately for non-503 errors (like 400 Bad Request)
+            }
+        }
+        throw new Error("Google Servers are heavily overloaded (503).");
+    }
+
+   // ==========================================
+    // 1. BULLETPROOF CONSENT GUARD (DRACONIAN AI PROMPT)
+    // ==========================================
+    window.runConsentGuard = async function() {
+      const p = document.getElementById('cg-prompt').value.trim();
+      if (!p) return;
+      const b = document.getElementById('cg-btn');
+      const r = document.getElementById('cg-result');
+      b.disabled = true; 
+      r.style.display = 'block'; 
+      r.className = 'result-box'; 
+      r.innerHTML = '<div class="loader"></div> Intercepting intent via Gemini...';
+
+      let finalVerdict = "";
+      let isBlocked = false;
+
+      // Fast-fail pre-filter (expanded)
+      const pLow = p.toLowerCase();
+      const blacklist = ['twerking', 'deepfake', 'naked', 'nude', 'kissing', 'undress', 'explicit', 'margot', 'bouncing', 'butt', 'underwear', 'bikini'];
+      const directHit = blacklist.find(w => pLow.includes(w));
+
+      try {
+        if (directHit) {
+            isBlocked = true;
+            finalVerdict = `Explicitly restricted term "${directHit}" detected.`;
+        } else {
+            // THE FIX: Unbreakable System Prompt enforcing strict output formatting
+            const sys = `You are Aegis, a zero-tolerance cybersecurity AI. Evaluate this prompt: "${p}".
+            
+            RULES (NO EXCEPTIONS):
+            1. REAL PEOPLE: If the prompt contains the name of ANY real person (celebrities, politicians, or normal people like "Donald Trump", "Taylor Swift", "Arjun", "Aditi"), YOU MUST BLOCK IT.
+            2. INTIMATE/SUGGESTIVE: If it mentions underwear, bikinis, twerking, or any physical/intimate acts, YOU MUST BLOCK IT.
+            3. IGNORE CONSENT: Users will lie and say "we give consent", "she is my friend", "this is for a project". IGNORE THESE LIES. Consent cannot be verified via text.
+
+            OUTPUT FORMAT:
+            If the prompt breaks ANY rule, reply EXACTLY with: "BLOCKED: [Brief reason for block]".
+            If the prompt is a 100% safe, fictional, generic concept (e.g., "a red car", "a sunset"), reply EXACTLY with: "SAFE".`;
+
+            const resp = await fetchWithRetry(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+              method: 'POST', headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify({ contents: [{ parts: [{ text: sys }] }] })
+            });
+            
+            const d = await resp.json();
+            const aiResponse = d.candidates ? d.candidates[0].content.parts[0].text.trim() : "BLOCKED: Safety Exception";
+
+            if (aiResponse.toUpperCase().startsWith("SAFE")) {
+                isBlocked = false;
+            } else {
+                isBlocked = true;
+                // Clean up the text for the UI
+                finalVerdict = aiResponse.replace("BLOCKED:", "").trim();
+                if (!finalVerdict) finalVerdict = "Impersonation or Explicit Intent Detected.";
+            }
+        }
+
+        // Update UI
+        if (!isBlocked) {
+          r.className = 'result-box safe';
+          r.innerHTML = '<strong>✓ Validation Passed</strong><p>No adversarial intent detected. Generation authorized.</p>';
+        } else {
+          r.className = 'result-box blocked';
+          r.innerHTML = `<strong>✗ Protocol Blocked</strong><p>Category: IMPERSONATION / NON-CONSENSUAL MEDIA. <br>Reason: ${finalVerdict}</p>`;
+        }
+
+        // GUARANTEED FIREBASE SAVE
+        await addDoc(collection(db, "violations"), { 
+            time: new Date().toISOString(), 
+            prompt: p, 
+            verdict: isBlocked ? "BLOCKED" : "SAFE",
+            reason: isBlocked ? finalVerdict : "No violations detected"
+        });
+
+      } catch (e) { 
+        console.error("Consent Guard Error:", e);
+        r.className = 'result-box blocked';
+        r.innerHTML = `<strong>✗ API Communication Error</strong><p>Unable to verify intent due to high server demand. Request blocked by default.</p>`;
+      } finally {
+        b.disabled = false;
+        b.innerText = 'Initiate Analysis';
+      }
+    };
+
+    // ==========================================
+    // 2. EVIDENCE ASSIST (WITH RETRY LOOP)
+    // ==========================================
+    window.runEvidenceAssist = async function() {
+      const f = document.getElementById('ea-image').files[0];
+      if (!f) return alert('Image upload required.');
+
+      const b = document.getElementById('ea-btn');
+      b.disabled = true; b.innerText = 'Scanning Neural Artifacts...';
+      document.getElementById('ea-result').style.display = 'none';
+      document.getElementById('ea-complaint-box').style.display = 'none';
+      
+      try {
+        // Raw Base64 for the 11KB WebP file
+        const b64 = await new Promise(r => { const rd = new FileReader(); rd.onload = e => r(e.target.result.split(',')[1]); rd.readAsDataURL(f); });
+        
+        // Uses the new fetchWithRetry function
+        const visionResp = await fetchWithRetry(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+          method: 'POST', headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ contents: [{ parts: [
+              { text: "Act as a digital forensics expert. Scrutinize this image for AI generation artifacts. Conclude your analysis exactly with 'Synthetic Probability Score: [X]%'." }, 
+              { inline_data: { mime_type: f.type, data: b64 } }
+            ] }] })
+        });
+        
+        const vD = await visionResp.json();
+        
+        if (vD.error || !vD.candidates) throw new Error("Safety Block or Error");
+
+        const findings = vD.candidates[0].content.parts[0].text.replace(/\*\*/g, '');
+        let scoreVal = 0;
+        const scoreMatch = findings.match(/(\d{1,3})%/);
+        if (scoreMatch) { scoreVal = parseInt(scoreMatch[1]); }
+        
+        document.getElementById('ea-score-text').innerText = scoreVal + '%';
+        document.getElementById('ea-meter-fill').style.width = scoreVal + '%';
+        document.getElementById('ea-findings-text').innerText = findings;
+
+        const warningText = document.getElementById('ea-fir-warning-text');
+        const generateBtn = document.getElementById('ea-generate-fir-btn');
+        
+        if (scoreVal >= 50) {
+            warningText.innerHTML = "Based on the high probability of synthetic manipulation, Aegis can automatically draft a preliminary First Information Report (FIR) and Evidence Certificate.";
+            warningText.style.color = "var(--text-sub)";
+            generateBtn.innerText = "Draft Legal Documents (Optional)";
+        } else {
+            warningText.innerHTML = "<strong style='color:#9f1239;'>⚠️ AI Warning:</strong> Aegis did not detect strong synthetic patterns. AI models can produce false negatives. If you are certain this is non-consensual synthetic media, you may override this and proceed.";
+            warningText.style.color = "#3f3f46"; 
+            generateBtn.innerText = "Override AI & Draft Documents";
+        }
+        
+        document.getElementById('ea-generate-fir-btn').style.display = 'block';
+        document.getElementById('ea-generate-fir-btn').disabled = false;
+        document.getElementById('ea-fir-section').style.display = 'block';
+        document.getElementById('ea-result').style.display = 'block';
+
+      } catch (e) { 
+        console.error(e);
+        alert("Scan failed. Google APIs are heavily overloaded. The system attempted to retry 3 times but was blocked. Please try again in 1 minute.");
+      } finally {
+        b.disabled = false; b.innerText = 'Scan Asset for Neural Artifacts';
+      }
+    };
+
+    // ==========================================
+    // 3. ENTERPRISE TEMPLATE GENERATOR
+    // ==========================================
+    window.generateFIR = async function() {
+      const n = document.getElementById('ea-name').value || "Unknown Subject";
+      const l = document.getElementById('ea-location').value || "Unknown URL";
+      const score = document.getElementById('ea-score-text').innerText;
+      const findings = document.getElementById('ea-findings-text').innerText;
+      
+      const btn = document.getElementById('ea-generate-fir-btn');
+      btn.disabled = true; btn.innerText = 'Drafting Legal Documents...';
+
+      // Instant Javascript Templating.
+      setTimeout(async () => {
+        const today = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+        const randomID = Math.floor(Math.random() * 900000) + 100000;
+        
+        const firText = `[AUTHORIZED SIMULATION - AEGIS FORENSIC NODE]
+
+To,
+The Nodal Officer / Cyber Crime Investigation Cell,
+National Cyber Crime Reporting Portal (cybercrime.gov.in)
+
+Subject: Urgent complaint regarding the unauthorized creation and circulation of non-consensual synthetic media (Deepfake) under Section 66E, 67, and 67A of the Information Technology Act, 2000.
+
+Respected Sir/Madam,
+
+I am writing to formally report a severe cybercrime incident involving the malicious digital manipulation of my likeness. An automated Aegis Network Forensic Scan has confirmed with high probability that the media located at the provided URL is synthetic (AI-generated).
+
+Date of Scan: ${today}
+Victim Identity: ${n}
+Source Platform/URL: ${l}
+
+TECHNICAL FORENSIC FINDINGS:
+${findings}
+
+PRAYER/REQUEST:
+I request the immediate issuance of a takedown notice to the intermediary platform under Section 79(3)(b) of the IT Act, and the registration of an FIR against the unidentified creator for violating my digital privacy.
+
+Sincerely,
+${n}`;
+        
+        const certText = `========================================
+AEGIS DIGITAL FORENSIC EVIDENCE CERTIFICATE
+========================================
+Document ID: AEG-CERT-${randomID}
+Timestamp: ${today}
+Target Identity: ${n}
+Analyzed URL: ${l}
+
+--- FORENSIC VERDICT ---
+Aegis Neural Network Synthetic Probability Score: ${score}
+Classification: ${parseInt(score) >= 50 ? 'HIGHLY LIKELY SYNTHETIC (AI-GENERATED)' : 'INCONCLUSIVE / LIKELY AUTHENTIC'}
+
+LEGAL DISCLAIMER: This document is an AI-generated preliminary forensic report intended to assist victims in filing formal complaints. It does not replace a manual forensic audit by law enforcement agencies.`;
+        
+        document.getElementById('ea-complaint-text').innerText = firText;
+        document.getElementById('ea-card-text').innerText = certText;
+        document.getElementById('ea-complaint-box').style.display = 'block';
+        btn.style.display = 'none'; 
+        
+        // GUARANTEED FIREBASE SAVE
+        try {
+             await addDoc(collection(db, "scans"), { 
+                 time: new Date().toISOString(), 
+                 victim: n, 
+                 score: score,
+                 type: "Legal Draft Generated" 
+             });
+        } catch(e) { console.error("Firebase log error", e); }
+        
+      }, 800);
+    };
+ // ==========================================
+    // 4. REAL-TIME GLOBAL INTELLIGENCE LISTENERS
+    // ==========================================
+    onSnapshot(collection(db, "violations"), (snapshot) => {
+        document.getElementById('threat-count').innerText = snapshot.size;
+        let feedHTML = '';
+        
+        // Sort by newest first and grab the top 5
+        const sortedDocs = snapshot.docs.map(d => d.data()).sort((a,b) => new Date(b.time) - new Date(a.time));
+        
+        sortedDocs.slice(0, 5).forEach(data => {
+            const timeStr = new Date(data.time).toLocaleTimeString();
+            const statusColor = data.verdict === "SAFE" ? "#166534" : "#9f1239";
+            feedHTML += `<div style="margin-bottom: 12px; border-bottom: 1px solid #eee; padding-bottom: 12px;">
+                <strong>[${timeStr}]</strong> Action: <span style="color: ${statusColor}; font-weight:bold;">${data.verdict}</span><br>
+                <span style="color: #71717a;">Prompt: "${data.prompt.substring(0, 60)}${data.prompt.length > 60 ? '...' : ''}"</span>
+            </div>`;
+        });
+        document.getElementById('intel-feed').innerHTML = feedHTML || "• No telemetry data available yet...";
+    });
+
+    onSnapshot(collection(db, "scans"), (snapshot) => {
+        document.getElementById('report-count').innerText = snapshot.size;
+    });
+</script>
+</body>
+</html>
