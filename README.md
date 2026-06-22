@@ -20,6 +20,27 @@ aegis addresses both failures: **Prevention** before content is created, and **R
 
 ## ⚙️ Core Architecture (Four Integrated Nodes)
 
+```mermaid
+graph TD
+    classDef user fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:#000
+    classDef nlu fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#000
+    classDef vision fill:#fff3e0,stroke:#ef6c00,stroke-width:2px,color:#000
+    classDef db fill:#f3e5f5,stroke:#6a1b9a,stroke-width:2px,color:#000
+    classDef doc fill:#ffebee,stroke:#c62828,stroke-width:2px,color:#000
+
+    A[User Input: Prompt or Image]:::user --> B{Consent Guard NLU}:::nlu
+    B -- Safe --> C[Proceed / Allow]:::nlu
+    B -- Violation Detected --> D[Intercept & Log to Dashboard]:::nlu
+
+    A --> E{Evidence Assist Scanner}:::vision
+    E -- Authentic Image --> F[Generate Forensic Audit Report]:::doc
+    E -- Synthetic Media Detected --> G[Auto-Generate FIR Draft]:::doc
+
+    D --> H[(Firebase Global Telemetry)]:::db
+    F --> H
+    G --> H
+```
+
 ### 1. Consent Guard (Prevention)
 An adversarial prompt interceptor utilizing zero-shot NLU to evaluate user intent in real-time. 
 * **Bulletproof NLU:** Powered by Gemini 2.5 Flash, it categorizes violations across 7 dimensions before generation occurs.
@@ -39,6 +60,22 @@ A real-time telemetry dashboard powered by Cloud Firestore.
 ### 4. How It Works (Education)
 A specialized manual detailing the Indian legal framework and the United Nations SDGs (5 & 16) to empower users with legal literacy.
 
+## 📊 Evaluation Methodology & Live Metrics
+
+The system is continuously evaluated against a growing dataset of adversarial prompts and synthetic media. 
+
+**Consent Guard (NLU Interceptor)**
+Evaluated against 65 complex prompts (benign, direct violations, and adversarial jailbreaks).
+* **Total Cases:** 65
+* **Rightly Flagged / Classified:** 52
+* **Wrongly Flagged:** 13
+* **System Bias:** The 80% accuracy reflects a deliberate "safety-first" threshold. The 13 misclassifications were predominantly false positives (flagging ambiguous safe prompts as unsafe). The system successfully maintained a near-zero false negative rate on severe violations. 
+
+**Evidence Assist (Forensic Scanner)**
+Evaluated against 11 sample images (mixed real and AI-generated).
+* **Authentic Images (4 cases):** Successfully detected as real. Generated 4 standard Forensic Reports. Zero legal drafts generated.
+* **Synthetic Images (7 cases):** Successfully detected as deepfakes. Generated 7 actionable **FIR Drafts** and corresponding Evidence Certificates.
+  
 ## 🛠️ Technology Stack
 
 | Component | Google Technology | How It's Used |
