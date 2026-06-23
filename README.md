@@ -4,7 +4,6 @@
 **Safeguarding Digital Integrity | Google Solutions Challenge 2026**
 
 | 🕵️‍♂️ **[Live Demo — aegis-89582.web.app](https://aegis-89582.web.app/)** |
-|---|---|
 
 *93% of deepfake victims globally are women. In India, cybercrime complaints rose 60% in two years. 62% of cases go unreported because victims lack accessible forensic tools and a legal roadmap.*
 
